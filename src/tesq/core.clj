@@ -27,25 +27,19 @@
 	  s)))
 
 
-
 (defn build-query
+  "Given db & table, return query string that retrieves table data and
+  looks up display fields from related tables."
   [dbname table]
-  (let [constraints (fk-constraints DB dbname)
-		sel (for [rel (filter #(= table (:table_name %)) constraints)]
-			  (str ", "
-				   (:referenced_table_name rel) "."
-				   (get display-fields (:referenced_table_name rel)))
-			  )
-		joins (for [rel (filter #(= table (:table_name %)) constraints)]
-				(str " INNER JOIN " (:referenced_table_name rel)
-					 " ON " (:table_name rel) "." (:column_name rel)
-					 " = " (:referenced_table_name rel) "." (:referenced_column_name rel)))
-		]
+  (let [constraints (filter #(= table (:table_name %))(fk-constraints DB dbname))
+		sel (for [{:keys [referenced_table_name]} constraints]
+			  (str ", " referenced_table_name "."
+				   (get display-fields referenced_table_name)))
+		joins (for [{:keys [referenced_table_name referenced_column_name table_name column_name]} constraints]
+				(str " INNER JOIN " referenced_table_name " ON " table_name "." column_name
+					 " = " referenced_table_name "." referenced_column_name))]
 	(str "SELECT " table ".*" (apply str sel) " FROM " table (apply str joins))
 	))
-
-
-;(clojure.pprint/pprint (build-query "acfe" "area_facts"))
 
 
 (defn table->html

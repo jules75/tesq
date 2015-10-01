@@ -18,6 +18,16 @@
 (auto-reload *ns*)
 
 
+
+(defn truncate
+  "If string is too long, cut short and append ellipsis."
+  [s]
+  (let [limit 250]
+	(if (< limit (count s))
+	  (str (apply str (take limit s)) "... (more)")
+	  s)))
+
+
 (defn table->html
   "Given table name, fetch all rows from database and return
   as HTML table."
@@ -28,7 +38,7 @@
 	  [:thead (for [[k v] (first rows)] [:td k])]
 	  (for [row rows]
 		[:tr
-		 (for [[k v] row] [:td v])
+		 (for [[k v] row] [:td (truncate (str v))])
 		 ]
 		)
 	  ])))

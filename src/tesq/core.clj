@@ -1,5 +1,5 @@
 (ns tesq.core
-  (:require [tesq.config :refer [DB]]
+  (:require [tesq.config :refer [DB display-fields]]
 			[clojure.java.jdbc :as jdbc]
 			[clojure.string :refer [replace capitalize]]
 			[compojure.core :refer [defroutes GET POST]]
@@ -18,7 +18,6 @@
 (auto-reload *ns*)
 
 
-
 (defn truncate
   "If string is too long, cut short and append ellipsis."
   [s]
@@ -28,11 +27,32 @@
 	  s)))
 
 
+
+(defn build-query
+  [dbname table]
+  (let [constraints (fk-constraints DB dbname)
+		sel (for [rel (filter #(= table (:table_name %)) constraints)]
+			  (str ", "
+				   (:referenced_table_name rel) "."
+				   (get display-fields (:referenced_table_name rel)))
+			  )
+		joins (for [rel (filter #(= table (:table_name %)) constraints)]
+				(str " INNER JOIN " (:referenced_table_name rel)
+					 " ON " (:table_name rel) "." (:column_name rel)
+					 " = " (:referenced_table_name rel) "." (:referenced_column_name rel)))
+		]
+	(str "SELECT " table ".*" (apply str sel) " FROM " table (apply str joins))
+	))
+
+
+;(clojure.pprint/pprint (build-query "acfe" "area_facts"))
+
+
 (defn table->html
   "Given table name, fetch all rows from database and return
   as HTML table."
-  [table]
-  (let [rows (jdbc/query DB [(str "SELECT * FROM " table)])]
+  [dbname table]
+  (let [rows (jdbc/query DB [(build-query dbname table)])]
 	(h/html
 	 [:p {:class "count"} (str (count rows) " rows found")]
 	 [:table
@@ -72,7 +92,8 @@
 				  [:li :a] (e/set-attr :href (str "/table/" item))
 				  [:li] (e/add-class (if (= table item)"active"))
 				  )
-  [:#content] (e/html-content (table->html table)))
+  [:#content] (e/html-content (table->html "acfe" table)))
+
 
 
 (defroutes routes

@@ -8,19 +8,42 @@ body {
 	font-size: 1em;
 }
 
+
+#content {
+	padding: 60px 20px 20px 20px;
+}
+
+
+nav {
+	background-color: #333;
+	padding: 10px;
+	position: fixed;
+	width: 100%;
+}
+nav li {
+	display: inline;
+	margin-right: 15px;
+}
+nav li a {
+	color: yellow;
+	text-decoration: none;
+}
+
+
 table {
 	border-collapse: collapse;
 }
-table thead {
-	font-weight: bold;
+table thead td {
+	background-color: #777;
+	color: white;
 }
 table td {
 	border: 1px solid #ddd;
 	vertical-align: top;
 	padding: 2px 5px 5px 2px;
+	background-color: #fcfcfc;
 }
-table tr:hover {
+table tr:hover td {
 	background-color: #ffa;
 }
-
 

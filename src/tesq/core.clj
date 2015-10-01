@@ -1,6 +1,6 @@
 (ns tesq.core
   (:require [tesq.config :refer [DB]]
-   			[clojure.java.jdbc :as jdbc]
+			[clojure.java.jdbc :as jdbc]
 			[compojure.core :refer [defroutes GET POST]]
 			[compojure.route :refer [resources not-found]]
 			[compojure.handler :refer [site]]
@@ -18,6 +18,8 @@
 
 
 (defn table->html
+  "Given table name, fetch all rows from database and return
+  as HTML table."
   [table]
   (let [rows (jdbc/query DB [(str "SELECT * FROM " table)])]
 	(h/html
@@ -45,12 +47,17 @@
 
 
 (e/deftemplate main-template "html/_layout.html"
-  []
-  [:#content] (e/html-content (table->html "facts")))
+  [table]
+  [:nav :ul :li] (e/clone-for
+				  [item (list-tables)]
+				  [:li :a] (e/content item)
+				  [:li :a] (e/set-attr :href (str "/table/" item))
+				  )
+  [:#content] (e/html-content (table->html table)))
 
 
 (defroutes routes
-  (GET "/" [] (main-template))
+  (GET "/table/:table" [table] (main-template table))
   (resources "/")
   (not-found "Page not found"))
 

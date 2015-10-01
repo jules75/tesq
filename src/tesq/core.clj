@@ -1,6 +1,7 @@
 (ns tesq.core
   (:require [tesq.config :refer [DB]]
 			[clojure.java.jdbc :as jdbc]
+			[clojure.string :refer [replace capitalize]]
 			[compojure.core :refer [defroutes GET POST]]
 			[compojure.route :refer [resources not-found]]
 			[compojure.handler :refer [site]]
@@ -46,11 +47,17 @@
   (jdbc/query DB [(str "DESC " table)]))
 
 
+(defn prettify
+  "Turn table name into something more human friendly."
+  [s]
+  (-> s capitalize (replace #"_" " ")))
+
+
 (e/deftemplate main-template "html/_layout.html"
   [table]
   [:nav :ul :li] (e/clone-for
 				  [item (list-tables)]
-				  [:li :a] (e/content item)
+				  [:li :a] (e/content (prettify item))
 				  [:li :a] (e/set-attr :href (str "/table/" item))
 				  )
   [:#content] (e/html-content (table->html table)))

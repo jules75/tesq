@@ -22,11 +22,14 @@ nav {
 }
 nav li {
 	display: inline;
-	margin-right: 15px;
+	margin-right: 25px;
 }
 nav li a {
 	color: yellow;
 	text-decoration: none;
+}
+nav li a:hover {
+	color: red;
 }
 
 

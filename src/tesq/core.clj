@@ -32,9 +32,10 @@
   looks up display fields from related tables."
   [dbname table]
   (let [constraints (filter #(= table (:table_name %))(fk-constraints DB dbname))
-		sel (for [{:keys [referenced_table_name]} constraints]
+		sel (for [{:keys [referenced_table_name column_name]} constraints]
 			  (str ", " referenced_table_name "."
-				   (get display-fields referenced_table_name)))
+				   (get display-fields referenced_table_name)
+				   " AS " column_name))
 		joins (for [{:keys [referenced_table_name referenced_column_name table_name column_name]} constraints]
 				(str " INNER JOIN " referenced_table_name " ON " table_name "." column_name
 					 " = " referenced_table_name "." referenced_column_name))]

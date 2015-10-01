@@ -24,12 +24,12 @@ nav li {
 	display: inline;
 	margin-right: 25px;
 }
-nav li a {
+nav li.active a {
 	color: yellow;
-	text-decoration: none;
 }
-nav li a:hover {
-	color: red;
+nav li a {
+	color: white;
+	text-decoration: none;
 }
 
 
@@ -48,5 +48,6 @@ table td {
 }
 table tr:hover td {
 	background-color: #ffa;
+	color: black;
 }
 

@@ -69,6 +69,7 @@
 				  [item (list-tables)]
 				  [:li :a] (e/content (prettify item))
 				  [:li :a] (e/set-attr :href (str "/table/" item))
+				  [:li] (e/add-class (if (= table item)"active"))
 				  )
   [:#content] (e/html-content (table->html table)))
 

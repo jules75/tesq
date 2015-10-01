@@ -51,3 +51,12 @@ table tr:hover td {
 	color: black;
 }
 
+
+
+.count {
+	float: right;
+	padding-left: 20px;
+	font-size: 11pt;
+	color: #777;
+}
+

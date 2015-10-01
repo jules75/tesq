@@ -34,6 +34,7 @@
   [table]
   (let [rows (jdbc/query DB [(str "SELECT * FROM " table)])]
 	(h/html
+	 [:p {:class "count"} (str (count rows) " rows found")]
 	 [:table
 	  [:thead (for [[k v] (first rows)] [:td k])]
 	  (for [row rows]

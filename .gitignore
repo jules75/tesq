@@ -1,0 +1,11 @@
+/target
+/classes
+/checkouts
+/resources/public/js/out/
+/src/tesq/config.clj
+pom.xml
+pom.xml.asc
+*.jar
+*.class
+/.lein-*
+/.nrepl-port

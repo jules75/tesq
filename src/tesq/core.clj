@@ -1,0 +1,59 @@
+(ns tesq.core
+  (:require [tesq.config :refer [DB]]
+   			[clojure.java.jdbc :as jdbc]
+			[compojure.core :refer [defroutes GET POST]]
+			[compojure.route :refer [resources not-found]]
+			[compojure.handler :refer [site]]
+			[hiccup.core :as h]
+			[ring.middleware.gzip :refer [wrap-gzip]]
+			[net.cgrand.enlive-html :as e]
+			[net.cgrand.reload :refer [auto-reload]]
+			[yesql.core :refer [defqueries]]
+			))
+
+
+(defqueries "sql/queries.sql")
+
+(auto-reload *ns*)
+
+
+(defn table->html
+  [table]
+  (let [rows (jdbc/query DB [(str "SELECT * FROM " table)])]
+	(h/html
+	 [:table
+	  [:thead (for [[k v] (first rows)] [:td k])]
+	  (for [row rows]
+		[:tr
+		 (for [[k v] row] [:td v])
+		 ]
+		)
+	  ])))
+
+
+(defn list-tables
+  "Returns list of table names for current db."
+  []
+  (map last (map first (vec (show-tables DB)))))
+
+
+(defn list-fields
+  "Returns list of fields for given table.
+  TODO: do this without string concat"
+  [table]
+  (jdbc/query DB [(str "DESC " table)]))
+
+
+(e/deftemplate main-template "html/_layout.html"
+  []
+  [:#content] (e/html-content (table->html "facts")))
+
+
+(defroutes routes
+  (GET "/" [] (main-template))
+  (resources "/")
+  (not-found "Page not found"))
+
+
+(def app (wrap-gzip (site routes)))
+

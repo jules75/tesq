@@ -55,6 +55,7 @@
 (defroutes routes
   (GET "/view/:table" [table] (view-template table))
   (GET "/edit/:table/:id" [table id] (edit-template table id))
+  (POST "/save" {params :params} (reduce str params))
   (resources "/")
   (not-found "Page not found"))
 

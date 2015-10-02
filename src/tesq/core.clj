@@ -56,9 +56,14 @@
 
 
 (defroutes routes
+  (GET "/" [] (view-template (first (list-tables))))
   (GET "/view/:table" [table] (view-template table))
   (GET "/edit/:table/:id" [table id] (edit-template table id))
-  (POST "/save" {params :params} (do (jdbc/execute! DB [(q/update-record params)]) "Saved"))
+  (POST "/save" {params :params}
+		(do
+		  (jdbc/execute! DB [(q/update-record params)])
+		  "Saved. <a href=\"/\">Continue</a>"
+		  ))
   (resources "/")
   (not-found "Page not found"))
 

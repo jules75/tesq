@@ -1,6 +1,7 @@
 (ns tesq.core
   (:require [tesq.config :refer [DB display-fields]]
-			[tesq.view :refer [table->html build-query]]
+			[tesq.view :as view]
+			[tesq.edit :as edit]
 			[clojure.java.jdbc :as jdbc]
 			[clojure.string :refer [replace capitalize]]
 			[compojure.core :refer [defroutes GET POST]]
@@ -30,7 +31,7 @@
   (-> s capitalize (replace #"_" " ")))
 
 
-(e/deftemplate main-template "html/_layout.html"
+(e/deftemplate view-template "html/_layout.html"
   [table]
   [:nav :ul :li] (e/clone-for
 				  [item (list-tables)]
@@ -39,13 +40,20 @@
 				  [:li] (e/add-class (if (= table item)"active")))
   [:#content] (let [constraints (fk-constraints DB (:database DB))
 					columns (map :field (jdbc/query DB [(str "DESC " table)]))
-					query (build-query table constraints columns display-fields)]
-				(e/html-content (table->html (jdbc/query DB [query])))
+					q (view/build-query table constraints columns display-fields)]
+				(e/html-content (view/table->html (jdbc/query DB [q])))
 				))
 
 
+(e/deftemplate edit-template "html/_layout.html"
+  [table pk]
+  [:#content] (let [q (edit/build-query table pk)]
+				(e/content (jdbc/query DB [q]))))
+
+
 (defroutes routes
-  (GET "/view/:table" [table] (main-template table))
+  (GET "/view/:table" [table] (view-template table))
+  (GET "/edit/:table/:pk" [table pk] (edit-template table pk))
   (resources "/")
   (not-found "Page not found"))
 

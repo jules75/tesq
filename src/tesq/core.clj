@@ -98,7 +98,7 @@
   [:nav :ul :li] (e/clone-for
 				  [item (list-tables)]
 				  [:li :a] (e/content (prettify item))
-				  [:li :a] (e/set-attr :href (str "/table/" item))
+				  [:li :a] (e/set-attr :href (str "/view/" item))
 				  [:li] (e/add-class (if (= table item)"active"))
 				  )
   [:#content] (e/html-content (table->html table)))
@@ -106,7 +106,7 @@
 
 
 (defroutes routes
-  (GET "/table/:table" [table] (main-template table))
+  (GET "/view/:table" [table] (main-template table))
   (resources "/")
   (not-found "Page not found"))
 

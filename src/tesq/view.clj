@@ -17,14 +17,20 @@
 
 (defn table->html
   "Given db rows, return HTML table."
-  [rows]
+  [rows table]
   (html
    [:p {:class "count"} (str (count rows) " rows found")]
    [:table
-	[:thead (for [[k v] (first rows)] [:td (escape-html k)])]
+	[:thead
+	 (conj
+	  (for [[k v] (first rows)] [:td (escape-html k)])
+	  [:td "actions"])
+	 ]
 	(for [row rows]
 	  [:tr
-	   (for [[k v] row] [:td (escape-html (truncate (str v)))])
+	   (conj
+		(for [[k v] row] [:td (escape-html (truncate (str v)))])
+		[:td [:a {:href (str "/edit/" table "/" (:id row))} "edit"]])
 	   ]
 	  )
 	]))

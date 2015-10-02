@@ -42,7 +42,7 @@
   [:#content] (let [constraints (fk-constraints DB (:database DB))
 					columns (map :field (jdbc/query DB [(str "DESC " table)]))
 					sql (q/select-all table constraints columns display-fields)]
-				(e/html-content (view/table->html (jdbc/query DB [sql])))
+				(e/html-content (view/table->html (jdbc/query DB [sql]) table))
 				))
 
 
@@ -58,7 +58,7 @@
 (defroutes routes
   (GET "/view/:table" [table] (view-template table))
   (GET "/edit/:table/:id" [table id] (edit-template table id))
-  (POST "/save" {params :params} (jdbc/execute! DB [(q/update-record params)]))
+  (POST "/save" {params :params} (do (jdbc/execute! DB [(q/update-record params)]) "Saved"))
   (resources "/")
   (not-found "Page not found"))
 

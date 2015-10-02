@@ -8,6 +8,7 @@
 			[compojure.route :refer [resources not-found]]
 			[compojure.handler :refer [site]]
 			[hiccup.core :as h]
+			[hiccup.util :refer [escape-html]]
 			[ring.middleware.gzip :refer [wrap-gzip]]
 			[net.cgrand.enlive-html :as e]
 			[net.cgrand.reload :refer [auto-reload]]
@@ -42,10 +43,10 @@
 
 
 (defn build-query
-  "Given db & table, return query string that retrieves table data and
+  "Given table name, return query string that retrieves table data and
   looks up display fields from related tables."
-  [dbname table]
-  (let [constraints (filter #(= table (:table_name %)) (fk-constraints DB dbname))
+  [table]
+  (let [constraints (filter #(= table (:table_name %)) (fk-constraints DB (:database DB)))
 		all-columns (map :field (jdbc/query DB [(str "DESC " table)]))
 		non-lookup-columns (difference (set all-columns) (set (map :column_name constraints)))
 		related-tables (for [{:keys [referenced_table_name column_name]} constraints]
@@ -66,16 +67,15 @@
 (defn table->html
   "Given table name, fetch all rows from database and return
   as HTML table."
-  [dbname table]
-  (let [_ (pprint (build-query dbname table))
-		rows (jdbc/query DB [(build-query dbname table)])]
+  [table]
+  (let [rows (jdbc/query DB [(build-query table)])]
 	(h/html
 	 [:p {:class "count"} (str (count rows) " rows found")]
 	 [:table
-	  [:thead (for [[k v] (first rows)] [:td k])]
+	  [:thead (for [[k v] (first rows)] [:td (escape-html k)])]
 	  (for [row rows]
 		[:tr
-		 (for [[k v] row] [:td (truncate (str v))])
+		 (for [[k v] row] [:td (escape-html (truncate (str v)))])
 		 ]
 		)
 	  ])))
@@ -101,7 +101,7 @@
 				  [:li :a] (e/set-attr :href (str "/table/" item))
 				  [:li] (e/add-class (if (= table item)"active"))
 				  )
-  [:#content] (e/html-content (table->html "acfe" table)))
+  [:#content] (e/html-content (table->html table)))
 
 
 

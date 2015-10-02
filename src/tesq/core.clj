@@ -41,20 +41,20 @@
 				  [:li] (e/add-class (if (= table item)"active")))
   [:#content] (let [constraints (fk-constraints DB (:database DB))
 					columns (map :field (jdbc/query DB [(str "DESC " table)]))
-					sql (q/build-query table constraints columns display-fields)]
+					sql (q/select-all table constraints columns display-fields)]
 				(e/html-content (view/table->html (jdbc/query DB [sql])))
 				))
 
 
 (e/deftemplate edit-template "html/_layout.html"
-  [table pk]
-  [:#content] (let [sql (edit/build-query table pk)]
-				(e/content (jdbc/query DB [sql]))))
+  [table id]
+  [:#content] (e/html-content (edit/row->html (first (jdbc/query DB [(q/select-one table id)]))))
+  )
 
 
 (defroutes routes
   (GET "/view/:table" [table] (view-template table))
-  (GET "/edit/:table/:pk" [table pk] (edit-template table pk))
+  (GET "/edit/:table/:id" [table id] (edit-template table id))
   (resources "/")
   (not-found "Page not found"))
 

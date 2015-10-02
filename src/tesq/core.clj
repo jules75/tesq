@@ -1,7 +1,9 @@
 (ns tesq.core
   (:require [tesq.config :refer [DB display-fields]]
 			[clojure.java.jdbc :as jdbc]
-			[clojure.string :refer [replace capitalize]]
+			[clojure.pprint :refer [pprint]]
+			[clojure.string :refer [replace capitalize trimr]]
+			[clojure.set :refer [difference]]
 			[compojure.core :refer [defroutes GET POST]]
 			[compojure.route :refer [resources not-found]]
 			[compojure.handler :refer [site]]
@@ -27,19 +29,37 @@
 	  s)))
 
 
+(defn trim-comma
+  "Remove comma from end of string (if present)."
+  [s]
+  (if (= \, (last s)) (apply str (butlast s)) s))
+
+
+(defn backtick
+  "Wrap string in backticks (`)."
+  [s]
+  (str "`" s "`"))
+
+
 (defn build-query
   "Given db & table, return query string that retrieves table data and
   looks up display fields from related tables."
   [dbname table]
-  (let [constraints (filter #(= table (:table_name %))(fk-constraints DB dbname))
-		sel (for [{:keys [referenced_table_name column_name]} constraints]
-			  (str ", " referenced_table_name "."
-				   (get display-fields referenced_table_name)
-				   " AS " column_name))
+  (let [constraints (filter #(= table (:table_name %)) (fk-constraints DB dbname))
+		all-columns (map :field (jdbc/query DB [(str "DESC " table)]))
+		non-lookup-columns (difference (set all-columns) (set (map :column_name constraints)))
+		related-tables (for [{:keys [referenced_table_name column_name]} constraints]
+						 (str referenced_table_name "."
+							  (backtick (get display-fields referenced_table_name))
+							  " AS " column_name "_lookup, "))
 		joins (for [{:keys [referenced_table_name referenced_column_name table_name column_name]} constraints]
 				(str " INNER JOIN " referenced_table_name " ON " table_name "." column_name
-					 " = " referenced_table_name "." referenced_column_name))]
-	(str "SELECT " table ".*" (apply str sel) " FROM " table (apply str joins))
+					 "=" referenced_table_name "." referenced_column_name))
+		table-clause (apply str
+							(concat
+							 (map #(str table "." (backtick %) ", ") non-lookup-columns)
+							 related-tables))]
+	(str "SELECT " (trim-comma (trimr table-clause)) " FROM " table (apply str joins))
 	))
 
 
@@ -47,7 +67,8 @@
   "Given table name, fetch all rows from database and return
   as HTML table."
   [dbname table]
-  (let [rows (jdbc/query DB [(build-query dbname table)])]
+  (let [_ (pprint (build-query dbname table))
+		rows (jdbc/query DB [(build-query dbname table)])]
 	(h/html
 	 [:p {:class "count"} (str (count rows) " rows found")]
 	 [:table
@@ -64,13 +85,6 @@
   "Returns list of table names for current db."
   []
   (map last (map first (vec (show-tables DB)))))
-
-
-(defn list-fields
-  "Returns list of fields for given table.
-  TODO: do this without string concat"
-  [table]
-  (jdbc/query DB [(str "DESC " table)]))
 
 
 (defn prettify

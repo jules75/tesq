@@ -2,6 +2,7 @@
   (:require [tesq.config :refer [DB display-fields]]
 			[tesq.view :as view]
 			[tesq.edit :as edit]
+			[tesq.query :as q]
 			[clojure.java.jdbc :as jdbc]
 			[clojure.string :refer [replace capitalize]]
 			[compojure.core :refer [defroutes GET POST]]
@@ -40,15 +41,15 @@
 				  [:li] (e/add-class (if (= table item)"active")))
   [:#content] (let [constraints (fk-constraints DB (:database DB))
 					columns (map :field (jdbc/query DB [(str "DESC " table)]))
-					q (view/build-query table constraints columns display-fields)]
-				(e/html-content (view/table->html (jdbc/query DB [q])))
+					sql (q/build-query table constraints columns display-fields)]
+				(e/html-content (view/table->html (jdbc/query DB [sql])))
 				))
 
 
 (e/deftemplate edit-template "html/_layout.html"
   [table pk]
-  [:#content] (let [q (edit/build-query table pk)]
-				(e/content (jdbc/query DB [q]))))
+  [:#content] (let [sql (edit/build-query table pk)]
+				(e/content (jdbc/query DB [sql]))))
 
 
 (defroutes routes

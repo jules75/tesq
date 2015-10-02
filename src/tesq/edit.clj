@@ -2,8 +2,11 @@
   "Edit table record"
   (:require [hiccup.core :refer [html]]
 			[hiccup.util :refer [escape-html]]
-			[hiccup.form :refer [form-to text-field submit-button label hidden-field]]
+			[hiccup.form :refer [form-to text-field text-area submit-button label hidden-field]]
 			))
+
+
+(def big-text 100) ; anything bigger justifies textarea
 
 
 (defn- read-only?
@@ -27,7 +30,9 @@
 	   (label k k))
 
 	 (for [[k v] row]
-	   (text-field (if (read-only? (name k)) {:disabled "disabled"} {}) k v))
+	   ((if (< big-text (count (str v))) text-area text-field)
+		(if (read-only? (name k)) {:disabled "disabled"} {})
+		k v))
 
 	 )
 	(submit-button "Save")

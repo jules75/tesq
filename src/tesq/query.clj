@@ -100,7 +100,7 @@
 		  (reduce str
 				  (for [[k v] fields]
 					(str
-					 (name k) "="
+					 (backtick (name k)) "="
 					 (if (numeric-string? v) v (squote v)) ","
 					 )
 					)))

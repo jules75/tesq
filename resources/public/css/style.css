@@ -71,6 +71,10 @@ input[type="submit"] {
 label {
 	color: #888;
 }
+textarea {
+	width: 40em;
+	height: 10em;
+}
 
 
 .count {

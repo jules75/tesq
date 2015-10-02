@@ -17,6 +17,18 @@
   (str "`" s "`"))
 
 
+(defn- squote
+  "Wrap string in single quotes."
+  [s]
+  (str "'" s "'"))
+
+
+(defn- numeric-string?
+  "True if string looks numeric (int, double, negative)."
+  [s]
+  (boolean (re-find #"^-?\d+\.?\d*$" s)))
+
+
 (defn select-all
   "Returns query string that retrieves table data and
   injects up display fields from related tables."
@@ -76,4 +88,21 @@
   (str "SELECT * FROM " table " WHERE id=" id))
 
 
+(defn update-record
+  "Params is map of key/val field/value pairs, all strings.
+  Must contain 'table' and 'id' keys."
+  [params]
+  (let [table (:table params)
+		id (:id params)
+		fields (dissoc params :table :id)]
+	(str "UPDATE " table " SET "
+		 (trim-comma
+		  (reduce str
+				  (for [[k v] fields]
+					(str
+					 (name k) "="
+					 (if (numeric-string? v) v (squote v)) ","
+					 )
+					)))
+		 " WHERE id=" id ";")))
 

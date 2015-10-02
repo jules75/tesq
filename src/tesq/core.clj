@@ -48,14 +48,17 @@
 
 (e/deftemplate edit-template "html/_layout.html"
   [table id]
-  [:#content] (e/html-content (edit/row->html (first (jdbc/query DB [(q/select-one table id)]))))
-  )
+  [:#content]
+  (e/html-content
+   (edit/row->html
+	(first (jdbc/query DB [(q/select-one table id)]))
+	table)))
 
 
 (defroutes routes
   (GET "/view/:table" [table] (view-template table))
   (GET "/edit/:table/:id" [table id] (edit-template table id))
-  (POST "/save" {params :params} (reduce str params))
+  (POST "/save" {params :params} (jdbc/execute! DB [(q/update-record params)]))
   (resources "/")
   (not-found "Page not found"))
 

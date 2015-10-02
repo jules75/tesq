@@ -1,6 +1,6 @@
-# skeleton
+# tesq
 
-A Clojure library designed to ... well, that part is up to you.
+A basic Clojure MySQL table editor. Not ready for prime time yet.
 
 ## Usage
 

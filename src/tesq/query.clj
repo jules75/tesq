@@ -88,21 +88,35 @@
   (str "SELECT * FROM " table " WHERE id=" id))
 
 
+(defn nil-string
+  "If s is empty return nil, otherwise s."
+  [s]
+  (if (empty? s) nil s))
+
+
+(defn mapvals
+  "Map f over vals in map, preserve keys."
+  [f m]
+  (into {} (for [[k v] m] [k (f v)])))
+
+
 (defn update-record
   "Params is map of key/val field/value pairs, all strings.
   Must contain 'table' and 'id' keys."
   [params]
   (let [table (:table params)
 		id (:id params)
-		fields (dissoc params :table :id)]
+		fields (mapvals nil-string (dissoc params :table :id))]
 	(str "UPDATE " table " SET "
 		 (trim-comma
 		  (reduce str
 				  (for [[k v] fields]
 					(str
 					 (backtick (name k)) "="
-					 (if (numeric-string? v) v (squote v)) ","
-					 )
-					)))
+					 (cond
+					  (empty? v) "NULL"
+					  (numeric-string? v) v
+					  :else (squote v))
+					 ","))))
 		 " WHERE id=" id ";")))
 

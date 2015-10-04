@@ -1,5 +1,5 @@
 (ns tesq.core
-  (:require [tesq.config :refer [DB display-fields]]
+  (:require [tesq.config :refer [DB display-fields field-notes]]
 			[tesq.view :as view]
 			[tesq.edit :as edit]
 			[tesq.query :as q]
@@ -52,7 +52,8 @@
   (e/html-content
    (edit/row->html
 	(first (jdbc/query DB [(q/select-one table id)]))
-	table)))
+	table
+	field-notes)))
 
 
 (defroutes routes

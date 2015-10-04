@@ -75,6 +75,10 @@ textarea {
 	width: 40em;
 	height: 10em;
 }
+form .note {
+	font-size: 9pt;
+	color: red;
+}
 
 
 .count {

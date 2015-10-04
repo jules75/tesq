@@ -18,13 +18,16 @@
 
 (defn row->html
   "Given db row, return html form."
-  [row table]
+  [row table field-notes]
   (html
    (form-to
 	[:post "/save"]
 	(hidden-field :table table)
 	(hidden-field :id (:id row))
 	(interleave
+
+	 (for [[k v] row]
+	   [:p {:class "note"} (get-in field-notes [table (name k)])])
 
 	 (for [[k v] row]
 	   (label k k))

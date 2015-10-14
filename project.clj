@@ -1,4 +1,4 @@
-(defproject tesq "0.1"
+(defproject tesq "0.2"
   :description "FIXME: write description"
   :url "http://example.com/FIXME"
   :license {:name "Eclipse Public License"
@@ -12,6 +12,7 @@
 				 [yesql "0.4.2"]
 				 [ring "1.4.0"]
 				 [bk/ring-gzip "0.1.1"]
+				 [ring-basic-authentication "1.0.5"]
 				 [prismatic/dommy "1.1.0"]
 				 [enlive "1.1.6"]
 				 [cljs-ajax "0.3.13"]]

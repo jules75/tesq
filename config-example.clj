@@ -5,6 +5,10 @@
   :user "root"
   :password ""}
 
+ :html-auth
+ {:password ""
+  }
+
 
  ;
  ; Key is table name, val is field name that represents display

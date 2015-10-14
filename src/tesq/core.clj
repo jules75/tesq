@@ -8,6 +8,7 @@
 			[compojure.route :refer [resources not-found]]
 			[compojure.handler :refer [site]]
 			[ring.middleware.gzip :refer [wrap-gzip]]
+			[ring.middleware.basic-authentication :refer [wrap-basic-authentication]]
 			[net.cgrand.enlive-html :as e]
 			[net.cgrand.reload :refer [auto-reload]]
 			[yesql.core :refer [defqueries]]
@@ -25,6 +26,13 @@
    read-string
    (into {}) ; ensure no code execution
    ))
+
+
+(defn auth?
+  "For basic HTML authentication"
+  [username password]
+  (= password (-> config :html-auth :password)))
+
 
 (def DB (:db config))
 
@@ -78,5 +86,4 @@
   (not-found "Page not found"))
 
 
-(def app (wrap-gzip (site routes)))
-
+(def app (wrap-gzip (wrap-basic-authentication (site routes) auth?)))

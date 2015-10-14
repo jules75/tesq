@@ -1,6 +1,5 @@
 (ns tesq.core
-  (:require [tesq.config :refer [DB display-fields field-notes]]
-			[tesq.view :as view]
+  (:require [tesq.view :as view]
 			[tesq.edit :as edit]
 			[tesq.query :as q]
 			[clojure.java.jdbc :as jdbc]
@@ -18,6 +17,16 @@
 (defqueries "sql/queries.sql")
 
 (auto-reload *ns*)
+
+
+(def config
+  (->>
+   (slurp "config.clj")
+   read-string
+   (into {}) ; ensure no code execution
+   ))
+
+(def DB (:db config))
 
 
 (defn list-tables
@@ -41,7 +50,7 @@
 				  [:li] (e/add-class (if (= table item)"active")))
   [:#content] (let [constraints (fk-constraints DB (:database DB))
 					columns (map :field (jdbc/query DB [(str "DESC " table)]))
-					sql (q/select-all table constraints columns display-fields)]
+					sql (q/select-all table constraints columns (:display-fields config))]
 				(e/html-content (view/table->html (jdbc/query DB [sql]) table))
 				))
 
@@ -53,7 +62,7 @@
    (edit/row->html
 	(first (jdbc/query DB [(q/select-one table id)]))
 	table
-	field-notes)))
+	(:field-notes config))))
 
 
 (defroutes routes

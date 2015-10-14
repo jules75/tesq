@@ -2,7 +2,7 @@
 /classes
 /checkouts
 /resources/public/js/out/
-/src/tesq/config.clj
+config.clj
 pom.xml
 pom.xml.asc
 *.jar

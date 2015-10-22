@@ -18,21 +18,26 @@
 (defn table->html
   "Given db rows, return HTML table."
   [rows table]
+  (println rows)
   (html
    [:p {:class "count"} (str (count rows) " rows found")]
    [:table
 	[:thead
 	 (conj
-	  (for [[k v] (first rows)] [:td (escape-html k)])
+	  (for [[k v] (first rows)
+			:when (not= :id k)]
+		[:td (escape-html k)])
 	  [:td "actions"])
 	 ]
 	(for [row rows]
 	  [:tr
 	   (conj
-		(for [[k v] row] [:td (escape-html (truncate (str v)))])
-		[:td
-		 [:a {:href (str "/view/" table "/" (:id row))} "view"]
-		 ])
+		(for [[k v] row
+			  :when (not= :id k)]
+		  [:td (escape-html (truncate (str v)))]
+		  )
+		[:td [:a {:href (str "/view/" table "/" (:id row))} "view"]]
+		)
 	   ]
 	  )
 	]))

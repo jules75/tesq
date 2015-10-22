@@ -1,5 +1,5 @@
 (ns tesq.core
-  (:require [tesq.list :as list]
+  (:require [tesq.html :as html]
 			[tesq.edit :as edit]
 			[tesq.query :as q]
 			[clojure.java.jdbc :as jdbc]
@@ -59,7 +59,10 @@
   [:#content] (let [constraints (fk-constraints DB (:database DB))
 					columns (map :field (jdbc/query DB [(str "DESC " table)]))
 					sql (q/select-all table constraints columns (:display-fields config))]
-				(e/html-content (list/table->html (jdbc/query DB [sql]) table))
+				(e/html-content
+				 (html/rows->html
+				  (jdbc/query DB [sql])
+				  table))
 				))
 
 
@@ -77,7 +80,7 @@
   [table id]
   [:#content]
   (e/html-content
-   (view/row->html
+   (view/render
 	(first (jdbc/query DB [(q/select-one table id)]))
 	table)))
 
@@ -90,7 +93,7 @@
   (POST "/save" {params :params}
 		(do
 		  (jdbc/execute! DB [(q/update-record params)])
-		  "Saved. <a href=\"/\">Continue</a>"
+		  (str "Saved. <a href=\"/\">Continue</a>")
 		  ))
   (resources "/")
   (not-found "Page not found"))

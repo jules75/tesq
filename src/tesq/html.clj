@@ -1,5 +1,5 @@
-(ns tesq.list
-  "List table contents"
+(ns tesq.html
+  "Produce HTML"
   (:require [hiccup.core :refer [html]]
 			[hiccup.util :refer [escape-html]]
 			[clojure.string :refer [trimr]]
@@ -15,10 +15,9 @@
 	  s)))
 
 
-(defn table->html
-  "Given db rows, return HTML table."
+(defn rows->html
+  "Given many db rows, return HTML table."
   [rows table]
-  (println rows)
   (html
    [:p {:class "count"} (str (count rows) " rows found")]
    [:table
@@ -27,8 +26,7 @@
 	  (for [[k v] (first rows)
 			:when (not= :id k)]
 		[:td (escape-html k)])
-	  [:td "actions"])
-	 ]
+	  [:td "actions"])]
 	(for [row rows]
 	  [:tr
 	   (conj
@@ -37,8 +35,18 @@
 		  [:td (escape-html (truncate (str v)))]
 		  )
 		[:td [:a {:href (str "/view/" table "/" (:id row))} "view"]]
-		)
-	   ]
-	  )
-	]))
+		)])]))
+
+
+(defn row->html
+  "Given single db row, return HTML table."
+  [row table]
+  (html
+   [:table
+	(for [[k v] row]
+	  [:tr
+	   [:td k]
+	   [:td v]])]
+   [:p [:a {:href (str "/edit/" table "/" (:id row))} "edit"]]
+   ))
 

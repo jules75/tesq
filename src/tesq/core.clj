@@ -1,6 +1,5 @@
 (ns tesq.core
   (:require [tesq.html :as html]
-			[tesq.edit :as edit]
 			[tesq.query :as q]
 			[clojure.java.jdbc :as jdbc]
 			[clojure.string :refer [replace capitalize]]
@@ -60,7 +59,7 @@
 					columns (map :field (jdbc/query DB [(str "DESC " table)]))
 					sql (q/select-all table constraints columns (:display-fields config))]
 				(e/html-content
-				 (html/rows->html
+				 (html/rows->table
 				  (jdbc/query DB [sql])
 				  table))
 				))
@@ -70,7 +69,7 @@
   [table id]
   [:#content]
   (e/html-content
-   (edit/row->html
+   (html/row->form
 	(first (jdbc/query DB [(q/select-one table id)]))
 	table
 	(:field-notes config))))
@@ -80,7 +79,7 @@
   [table id]
   [:#content]
   (e/html-content
-   (view/render
+   (html/row->table
 	(first (jdbc/query DB [(q/select-one table id)]))
 	table)))
 

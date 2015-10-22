@@ -1,5 +1,5 @@
 (ns tesq.core
-  (:require [tesq.view :as view]
+  (:require [tesq.list :as list]
 			[tesq.edit :as edit]
 			[tesq.query :as q]
 			[clojure.java.jdbc :as jdbc]
@@ -49,7 +49,7 @@
   (-> s capitalize (replace #"_" " ")))
 
 
-(e/deftemplate view-template "html/_layout.html"
+(e/deftemplate list-template "html/_layout.html"
   [table]
   [:nav :ul :li] (e/clone-for
 				  [item (list-tables)]
@@ -59,7 +59,7 @@
   [:#content] (let [constraints (fk-constraints DB (:database DB))
 					columns (map :field (jdbc/query DB [(str "DESC " table)]))
 					sql (q/select-all table constraints columns (:display-fields config))]
-				(e/html-content (view/table->html (jdbc/query DB [sql]) table))
+				(e/html-content (list/table->html (jdbc/query DB [sql]) table))
 				))
 
 
@@ -74,8 +74,8 @@
 
 
 (defroutes routes
-  (GET "/" [] (view-template (first (list-tables))))
-  (GET "/list/:table" [table] (view-template table))
+  (GET "/" [] (list-template (first (list-tables))))
+  (GET "/list/:table" [table] (list-template table))
   (GET "/edit/:table/:id" [table id] (edit-template table id))
   (POST "/save" {params :params}
 		(do

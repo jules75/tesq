@@ -1,5 +1,5 @@
-(ns tesq.view
-  "View table contents"
+(ns tesq.list
+  "List table contents"
   (:require [hiccup.core :refer [html]]
 			[hiccup.util :refer [escape-html]]
 			[clojure.string :refer [trimr]]
@@ -30,7 +30,11 @@
 	  [:tr
 	   (conj
 		(for [[k v] row] [:td (escape-html (truncate (str v)))])
-		[:td [:a {:href (str "/edit/" table "/" (:id row))} "edit"]])
+		[:td
+		 [:a {:href (str "/view/" table "/" (:id row))} "view"]
+		 (str " ")
+		 [:a {:href (str "/edit/" table "/" (:id row))} "edit"]
+		 ])
 	   ]
 	  )
 	]))

@@ -58,7 +58,7 @@
 	  [:tr
 	   [:td k]
 	   [:td v]])]
-   [:p [:a {:href (str "/edit/" table "/" (:id row))} "edit"]]
+   [:button [:a {:href (str "/edit/" table "/" (:id row))} "Edit"]]
    ))
 
 

@@ -88,13 +88,13 @@
   (str "SELECT * FROM " table " WHERE id=" id))
 
 
-(defn nil-string
+(defn- nil-string
   "If s is empty return nil, otherwise s."
   [s]
   (if (empty? s) nil s))
 
 
-(defn mapvals
+(defn- mapvals
   "Map f over vals in map, preserve keys."
   [f m]
   (into {} (for [[k v] m] [k (f v)])))

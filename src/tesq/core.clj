@@ -27,7 +27,7 @@
    ))
 
 
-(defn auth?
+(defn- auth?
   "For basic HTML authentication"
   [username password]
   (= password (-> config :html-auth :password)))
@@ -36,13 +36,13 @@
 (def DB (:db config))
 
 
-(defn list-tables
+(defn- list-tables
   "Returns list of table names for current db."
   []
   (map last (map first (vec (show-tables DB)))))
 
 
-(defn prettify
+(defn- prettify
   "Turn table name into something more human friendly."
   [s]
   (-> s capitalize (replace #"_" " ")))

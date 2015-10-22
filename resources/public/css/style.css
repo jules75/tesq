@@ -65,7 +65,7 @@ input[type="text"] {
 	margin-bottom: 2em;
 	width: 40em;
 }
-input[type="submit"] {
+input[type="submit"], button {
 	padding: 5px 10px;
 }
 label {
@@ -78,6 +78,10 @@ textarea {
 form .note {
 	font-size: 9pt;
 	color: red;
+}
+button a {
+	text-decoration: none;
+	color: black;
 }
 
 

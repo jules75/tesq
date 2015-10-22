@@ -54,7 +54,7 @@
   [:nav :ul :li] (e/clone-for
 				  [item (list-tables)]
 				  [:li :a] (e/content (prettify item))
-				  [:li :a] (e/set-attr :href (str "/view/" item))
+				  [:li :a] (e/set-attr :href (str "/list/" item))
 				  [:li] (e/add-class (if (= table item)"active")))
   [:#content] (let [constraints (fk-constraints DB (:database DB))
 					columns (map :field (jdbc/query DB [(str "DESC " table)]))
@@ -75,7 +75,7 @@
 
 (defroutes routes
   (GET "/" [] (view-template (first (list-tables))))
-  (GET "/view/:table" [table] (view-template table))
+  (GET "/list/:table" [table] (view-template table))
   (GET "/edit/:table/:id" [table id] (edit-template table id))
   (POST "/save" {params :params}
 		(do

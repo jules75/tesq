@@ -32,8 +32,6 @@
 		(for [[k v] row] [:td (escape-html (truncate (str v)))])
 		[:td
 		 [:a {:href (str "/view/" table "/" (:id row))} "view"]
-		 (str " ")
-		 [:a {:href (str "/edit/" table "/" (:id row))} "edit"]
 		 ])
 	   ]
 	  )

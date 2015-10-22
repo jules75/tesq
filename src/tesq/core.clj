@@ -73,9 +73,19 @@
 	(:field-notes config))))
 
 
+(e/deftemplate view-template "html/_layout.html"
+  [table id]
+  [:#content]
+  (e/html-content
+   (view/row->html
+	(first (jdbc/query DB [(q/select-one table id)]))
+	table)))
+
+
 (defroutes routes
   (GET "/" [] (list-template (first (list-tables))))
   (GET "/list/:table" [table] (list-template table))
+  (GET "/view/:table/:id" [table id] (view-template table id))
   (GET "/edit/:table/:id" [table id] (edit-template table id))
   (POST "/save" {params :params}
 		(do
@@ -87,3 +97,4 @@
 
 
 (def app (wrap-gzip (wrap-basic-authentication (site routes) auth?)))
+

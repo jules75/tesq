@@ -30,8 +30,8 @@
 
 
 (defn select-all
-  "Returns query string that retrieves table data and
-  injects up display fields from related tables."
+  "Returns query string that retrieves table data including display fields
+  from related tables."
   [
    ; table name
    table
@@ -80,6 +80,16 @@
 		]
 	(str "SELECT " (->> select-list (apply str) trimr trim-comma) " FROM " table (apply str joins))
 	))
+
+
+(defn count-children
+  "Given record id, count child records of a one-to-many nature."
+  [table id constraints]
+  (let [c (first (filter #(= table (:referenced_table_name %)) constraints))]
+	(str "SELECT count(*) AS count, " (squote (:table_name c)) " AS tablename"
+		 " FROM " (:table_name c)
+		 " WHERE " (:column_name c)
+		 " = " id)))
 
 
 (defn select-one

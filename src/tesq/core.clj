@@ -79,9 +79,15 @@
   [table id]
   [:#content]
   (e/html-content
+
    (html/row->table
 	(first (jdbc/query DB [(q/select-one table id)]))
-	table)))
+	table)
+
+   (html/row->table
+	(first (jdbc/query DB [(q/count-children table id (fk-constraints DB (:database DB)))]))
+	table)
+   ))
 
 
 (defroutes routes

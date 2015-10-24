@@ -83,9 +83,10 @@
 
 
 (defn count-children
-  "Given record id, count child records of a one-to-many nature."
+  "Given record id, count child records of a one-to-many nature.
+  Returns collection (one or more) of query strings."
   [table id constraints]
-  (let [c (first (filter #(= table (:referenced_table_name %)) constraints))]
+  (for [c (filter #(= table (:referenced_table_name %)) constraints)]
 	(str "SELECT count(*) AS count, " (squote (:table_name c)) " AS tablename"
 		 " FROM " (:table_name c)
 		 " WHERE " (:column_name c)

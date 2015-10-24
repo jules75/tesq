@@ -1,8 +1,8 @@
 (ns tesq.core
   (:require [tesq.html :as html]
 			[tesq.query :as q]
+			[tesq.utils :refer [prettify]]
 			[clojure.java.jdbc :as jdbc]
-			[clojure.string :refer [replace capitalize]]
 			[compojure.core :refer [defroutes GET POST]]
 			[compojure.route :refer [resources not-found]]
 			[compojure.handler :refer [site]]
@@ -42,12 +42,6 @@
   (map last (map first (vec (show-tables DB)))))
 
 
-(defn- prettify
-  "Turn table name into something more human friendly."
-  [s]
-  (-> s capitalize (replace #"_" " ")))
-
-
 (e/deftemplate list-template "html/_layout.html"
   [table]
   [:nav :ul :li] (e/clone-for
@@ -84,7 +78,7 @@
 	(first (jdbc/query DB [(q/select-one table id)]))
 	table)
 
-   (html/row->table
+   (html/render-count
 	(first (jdbc/query DB [(q/count-children table id (fk-constraints DB (:database DB)))]))
 	table)
    ))

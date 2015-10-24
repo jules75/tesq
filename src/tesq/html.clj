@@ -1,6 +1,7 @@
 (ns tesq.html
   "Produce HTML"
-  (:require [hiccup.core :refer [html]]
+  (:require [tesq.utils :refer [prettify]]
+			[hiccup.core :refer [html]]
 			[hiccup.util :refer [escape-html]]
 			[hiccup.form :refer [form-to text-field text-area submit-button label hidden-field]]
 			[clojure.string :refer [trimr]]
@@ -60,6 +61,12 @@
 	   [:td v]])]
    [:button [:a {:href (str "/edit/" table "/" (:id row))} "Edit"]]
    ))
+
+
+(defn render-count
+  "Render db row containing count data (:count, :tablename)."
+  [row table]
+  (html [:p (str "Contains " (:count row) " " (prettify (:tablename row)))]))
 
 
 (defn row->form

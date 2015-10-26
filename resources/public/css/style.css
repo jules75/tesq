@@ -65,7 +65,11 @@ input[type="text"] {
 	margin-bottom: 2em;
 	width: 40em;
 }
-input[type="submit"], button {
+input[type="submit"] {
+	padding: 5px 10px;
+}
+button a {
+	display: inline-block;
 	padding: 5px 10px;
 }
 label {

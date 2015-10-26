@@ -59,7 +59,7 @@
 	  [:tr
 	   [:td k]
 	   [:td (truncate v)]])]
-   [:button [:a {:href (str "/edit?table=" table "&id=" (:id row))} "Edit"]]
+   [:button [:a {:href (str "/edit?table=" table "&id=" (:id row))} "Edit this record"]]
    ))
 
 
@@ -71,7 +71,7 @@
 	[:a {:href (str "list?table=" (:tablename row)
 					"&field=" (singular table) "_id"
 					"&value=" id)}
-	 (str "Has " (:count row) " " (prettify (:tablename row)))
+	 (str (:count row) " " (prettify (:tablename row)))
 	 ]]))
 
 

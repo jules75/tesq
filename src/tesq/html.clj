@@ -46,7 +46,7 @@
 			  :when (not= :id k)]
 		  [:td (escape-html (truncate (str v)))]
 		  )
-		[:td [:a {:href (str "/view/" table "/" (:id row))} "view"]]
+		[:td [:a {:href (str "/view?table=" table "&id=" (:id row))} "view"]]
 		)])]))
 
 
@@ -59,14 +59,14 @@
 	  [:tr
 	   [:td k]
 	   [:td v]])]
-   [:button [:a {:href (str "/edit/" table "/" (:id row))} "Edit"]]
+   [:button [:a {:href (str "/edit?table=" table "&id=" (:id row))} "Edit"]]
    ))
 
 
 (defn render-count
   "Render db row containing count data (:count, :tablename)."
   [row table]
-  (html [:p (str "Contains " (:count row) " " (prettify (:tablename row)))]))
+  (html [:p (str "Has " (:count row) " " (prettify (:tablename row)))]))
 
 
 (defn row->form

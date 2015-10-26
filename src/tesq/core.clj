@@ -57,7 +57,7 @@
 						 value
 						 constraints
 						 columns
-						 (into {} (for [[k v] (:tables config)] [k (:display-field v)]))
+						 (into {} (for [[k v] (:tables config)] [k (:display-field v)])) ; TODO: just pass (:tables config)
 						 )]
 				(e/html-content
 				 (html/rows->table
@@ -73,7 +73,8 @@
    (html/row->form
 	(first (jdbc/query DB [(q/select-one table id)]))
 	table
-	(:field-notes config))))
+	(:tables config)
+	)))
 
 
 (e/deftemplate view-template "html/_layout.html"

@@ -77,7 +77,7 @@
 
 (defn row->form
   "Given db row, return html form."
-  [row table field-notes]
+  [row table table-config]
   (html
    (form-to
 	[:post "/save"]
@@ -86,7 +86,7 @@
 	(interleave
 
 	 (for [[k v] row]
-	   [:p {:class "note"} (get-in field-notes [table (name k)])])
+	   [:p {:class "note"} (get-in table-config [table :fields (name k) :note])])
 
 	 (for [[k v] row]
 	   (label k k))

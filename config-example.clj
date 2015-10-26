@@ -17,25 +17,17 @@
  :tables
  {
   "areas" {:display-field "title"}
+  "area_facts" {:fields
+				{"detail_text" {:note "Populate detail_text OR detail_value, but not both"}
+				 "detail_value" {:note "Populate detail_text OR detail_value, but not both"}}}
   "facts" {:display-field "title"}
   "fact_categories" {:display-field "title"}
   "places" {:display-field "title"}
   "place_categories" {:display-field "title"}
+  "place_facts" {:fields
+				 {"detail_text" {:note "Populate detail_text OR detail_value, but not both"}
+				  "detail_value" {:note "Populate detail_text OR detail_value, but not both"}}}
   "regions" {:display-field "title"}
-  }
-
-
- ;
- ; Field notes are shown when user is editing a record.
- ; Key is table name, value is map of field/note pairs.
- ;
- :field-notes
- {"area_facts"
-  {"detail_text" "Populate detail_text OR detail_value, but not both"
-   "detail_value" "Populate detail_text OR detail_value, but not both"}
-  "place_facts"
-  {"detail_text" "Populate detail_text OR detail_value, but not both"
-   "detail_value" "Populate detail_text OR detail_value, but not both"}
   }
 
 

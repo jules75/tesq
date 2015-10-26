@@ -11,18 +11,18 @@
 
 
  ;
- ; Key is table name, val is field name that represents display
- ; value for that field. Tables without an entry here are not
- ; considered to have a display field.
+ ; Meta data about our tables that can't be stored
+ ; in the database.
  ;
- :display-fields
- {"areas" "title"
-  "facts" "title"
-  "fact_categories" "title"
-  "places" "title"
-  "place_categories" "title"
-  "regions" "title"}
-
+ :tables
+ {
+  "areas" {:display-field "title"}
+  "facts" {:display-field "title"}
+  "fact_categories" {:display-field "title"}
+  "places" {:display-field "title"}
+  "place_categories" {:display-field "title"}
+  "regions" {:display-field "title"}
+  }
 
 
  ;

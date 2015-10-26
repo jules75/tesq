@@ -57,7 +57,8 @@
 						 value
 						 constraints
 						 columns
-						 (:display-fields config))]
+						 (into {} (for [[k v] (:tables config)] [k (:display-field v)]))
+						 )]
 				(e/html-content
 				 (html/rows->table
 				  (jdbc/query DB [sql])

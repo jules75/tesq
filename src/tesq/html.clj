@@ -8,7 +8,7 @@
 			))
 
 
-(def big-text 100) ; anything bigger justifies textarea
+(def big-text 200) ; anything bigger justifies truncation or textarea
 
 
 (defn- read-only?
@@ -21,10 +21,9 @@
 (defn- truncate
   "If string is too long, cut short and append ellipsis."
   [s]
-  (let [limit 250]
-	(if (< limit (count s))
-	  (str (apply str (take limit s)) "... (more)")
-	  s)))
+  (if (< big-text (count (str s)))
+	(str (apply str (take big-text (str s))) "... (more)")
+	s))
 
 
 (defn rows->table
@@ -58,7 +57,7 @@
 	(for [[k v] row]
 	  [:tr
 	   [:td k]
-	   [:td v]])]
+	   [:td (truncate v)]])]
    [:button [:a {:href (str "/edit?table=" table "&id=" (:id row))} "Edit"]]
    ))
 

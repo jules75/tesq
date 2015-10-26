@@ -11,4 +11,13 @@
 (defn singularise
   "Turn plural string into singular."
   [s]
-  (replace s #"s$" ""))
+  (cond
+
+   (re-find #"ies$" s)
+   (replace s #"ies$" "y")
+
+   :else
+   (replace s #"s$" "")
+
+   ))
+

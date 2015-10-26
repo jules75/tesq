@@ -1,6 +1,6 @@
 (ns tesq.html
   "Produce HTML"
-  (:require [tesq.utils :refer [prettify]]
+  (:require [tesq.utils :refer [prettify singularise]]
 			[hiccup.core :refer [html]]
 			[hiccup.util :refer [escape-html]]
 			[hiccup.form :refer [form-to text-field text-area submit-button label hidden-field]]
@@ -64,9 +64,15 @@
 
 
 (defn render-count
-  "Render db row containing count data (:count, :tablename)."
-  [row table]
-  (html [:p (str "Has " (:count row) " " (prettify (:tablename row)))]))
+  "Render db row (:count, :tablename) containing count data."
+  [row table id]
+  (html
+   [:p
+	[:a {:href (str "list?table=" (:tablename row)
+					"&field=" (singularise table) "_id"
+					"&value=" id)}
+	 (str "Has " (:count row) " " (prettify (:tablename row)))
+	 ]]))
 
 
 (defn row->form

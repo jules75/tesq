@@ -36,6 +36,12 @@
    ; table name
    table
 
+   ; field name to filter on, may be nil
+   field
+
+   ; filter by field=value, may be nil (only if field is nil)
+   value
+
    ;
    ; foreign key contraints from schema, e.g.;
    ;
@@ -74,11 +80,15 @@
 					 col :column_name} constraints]
 				(str " INNER JOIN " ftab " ON " tab "." col "=" ftab "." fcol))
 
+		where-clause (when (and field value) (str " WHERE " field "=" value))
+
 		select-list (concat
 					 (map #(str table "." (backtick %) ", ") columns)
 					 related-tables)
 		]
-	(str "SELECT " (->> select-list (apply str) trimr trim-comma) " FROM " table (apply str joins))
+	(str
+	 "SELECT " (->> select-list (apply str) trimr trim-comma)
+	 " FROM " table (apply str joins) where-clause)
 	))
 
 

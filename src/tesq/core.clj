@@ -43,7 +43,7 @@
 
 
 (e/deftemplate list-template "html/_layout.html"
-  [table]
+  [table field value]
   [:nav :ul :li] (e/clone-for
 				  [item (list-tables)]
 				  [:li :a] (e/content (prettify item))
@@ -51,7 +51,13 @@
 				  [:li] (e/add-class (if (= table item)"active")))
   [:#content] (let [constraints (fk-constraints DB (:database DB))
 					columns (map :field (jdbc/query DB [(str "DESC " table)]))
-					sql (q/select-all table constraints columns (:display-fields config))]
+					sql (q/select-all
+						 table
+						 field
+						 value
+						 constraints
+						 columns
+						 (:display-fields config))]
 				(e/html-content
 				 (html/rows->table
 				  (jdbc/query DB [sql])
@@ -73,19 +79,18 @@
   [table id]
   [:#content]
   (e/html-content
-   (apply str
-		  (cons
-		   (html/row->table
-			(first (jdbc/query DB [(q/select-one table id)]))
-			table)
-		   (for [sql (q/count-children table id (fk-constraints DB (:database DB)))]
-			 (html/render-count (first (jdbc/query DB [sql])) table))
-		   ))))
+   (let [row (first (jdbc/query DB [(q/select-one table id)]))]
+	 (apply str
+			(cons
+			 (html/row->table row table)
+			 (for [sql (q/count-children table id (fk-constraints DB (:database DB)))]
+			   (html/render-count (first (jdbc/query DB [sql])) table id))
+			 )))))
 
 
 (defroutes routes
   (GET "/" [] (list-template (first (list-tables))))
-  (GET "/list" [& {:keys [table]}] (list-template table))
+  (GET "/list" [& {:keys [table field value]}] (list-template table field value))
   (GET "/view" [& {:keys [id table]}] (view-template table id))
   (GET "/edit" [& {:keys [id table]}] (edit-template table id))
   (POST "/save" {params :params}

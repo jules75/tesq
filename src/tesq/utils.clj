@@ -1,6 +1,5 @@
 (ns tesq.utils
-  (:require	[clojure.string :refer [replace capitalize]]
-			))
+  (:require	[clojure.string :refer [replace capitalize]]))
 
 
 (defn prettify
@@ -8,3 +7,8 @@
   [s]
   (-> s capitalize (replace #"_" " ")))
 
+
+(defn singularise
+  "Turn plural string into singular."
+  [s]
+  (replace s #"s$" ""))

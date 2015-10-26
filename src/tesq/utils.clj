@@ -7,17 +7,3 @@
   [s]
   (-> s capitalize (replace #"_" " ")))
 
-
-(defn singularise
-  "Turn plural string into singular."
-  [s]
-  (cond
-
-   (re-find #"ies$" s)
-   (replace s #"ies$" "y")
-
-   :else
-   (replace s #"s$" "")
-
-   ))
-

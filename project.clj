@@ -8,6 +8,7 @@
 				 [org.clojure/clojurescript "0.0-3308"]
 				 [mysql/mysql-connector-java "5.1.32"]
 				 [org.clojure/java.jdbc "0.4.1"]
+				 [inflections "0.9.14"]
 				 [hiccup "1.0.5"]
 				 [yesql "0.4.2"]
 				 [ring "1.4.0"]

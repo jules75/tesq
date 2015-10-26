@@ -89,7 +89,7 @@
 
 
 (defroutes routes
-  (GET "/" [] (list-template (first (list-tables))))
+  (GET "/" [] (list-template (first (list-tables)) nil nil))
   (GET "/list" [& {:keys [table field value]}] (list-template table field value))
   (GET "/view" [& {:keys [id table]}] (view-template table id))
   (GET "/edit" [& {:keys [id table]}] (edit-template table id))

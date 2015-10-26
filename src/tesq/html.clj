@@ -1,11 +1,12 @@
 (ns tesq.html
   "Produce HTML"
-  (:require [tesq.utils :refer [prettify singularise]]
-			[hiccup.core :refer [html]]
-			[hiccup.util :refer [escape-html]]
-			[hiccup.form :refer [form-to text-field text-area submit-button label hidden-field]]
-			[clojure.string :refer [trimr]]
-			))
+  (:require  [inflections.core :refer [singular]]
+			 [tesq.utils :refer [prettify]]
+			 [hiccup.core :refer [html]]
+			 [hiccup.util :refer [escape-html]]
+			 [hiccup.form :refer [form-to text-field text-area submit-button label hidden-field]]
+			 [clojure.string :refer [trimr]]
+			 ))
 
 
 (def big-text 200) ; anything bigger justifies truncation or textarea
@@ -68,7 +69,7 @@
   (html
    [:p
 	[:a {:href (str "list?table=" (:tablename row)
-					"&field=" (singularise table) "_id"
+					"&field=" (singular table) "_id"
 					"&value=" id)}
 	 (str "Has " (:count row) " " (prettify (:tablename row)))
 	 ]]))
